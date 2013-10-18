@@ -20,13 +20,14 @@ func (p *Predictors) Predict(pc int, taken bool) {
 func main() {
 	//(:= works out type for you and declares implicitly)
 	p := new(Predictors)
-	p.predictors = make([]Predictor, 6)
+	p.predictors = make([]Predictor, 7)
 	p.predictors[0] = new(AlwaysTaken)
 	p.predictors[1] = new(NeverTaken)
-	p.predictors[2] = &TwoBit {bitmask: 0x1FF}
-	p.predictors[3] = &TwoBit {bitmask: 0x3FF}
-	p.predictors[4] = &TwoBit {bitmask: 0x7FF}
-	p.predictors[5] = &TwoBit {bitmask: 0xFFF}
+	p.predictors[2] = &TwoBit{bitmask: 0x1FF}
+	p.predictors[3] = &TwoBit{bitmask: 0x3FF}
+	p.predictors[4] = &TwoBit{bitmask: 0x7FF}
+	p.predictors[5] = &TwoBit{bitmask: 0xFFF}
+	p.predictors[6] = &Profiled{Predictions: make(map[int]TakenRecord)}
 
 	f, err := os.Open("pathological.out")
 	if err != nil {
@@ -40,4 +41,5 @@ func main() {
 	PrintStats("2-bit predictor, 1024 table", p.predictors[3])
 	PrintStats("2-bit predictor, 2048 table", p.predictors[4])
 	PrintStats("2-bit predictor, 4096 table", p.predictors[5])
+	PrintStats("Profiled", p.predictors[6])
 }

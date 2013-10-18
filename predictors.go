@@ -41,6 +41,6 @@ func (b *BasePredictor) Incorrect() int {
 }
 
 func PrintStats(name string, p Predictor) {
-	total := float64(p.Correct()+p.Incorrect())
+	total := float64(p.Correct() + p.Incorrect())
 	fmt.Printf("%s — %d/%d correct %.2f%% of the time, incorrect %.2f%%\n", name, p.Correct(), p.Incorrect(), 100*float64(p.Correct())/total, 100*float64(p.Incorrect())/total)
 }

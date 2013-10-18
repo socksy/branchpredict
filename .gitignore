@@ -1,7 +1,6 @@
 # Compiled Object files, Static and Dynamic libs (Shared Objects)
 *.o
 *.a
-*.so
 
 # Folders
 _obj
@@ -20,3 +19,9 @@ _cgo_export.*
 _testmain.go
 
 *.exe
+
+*.swp
+*.swo
+pathological
+pathological.out
+pathological.tar.gz

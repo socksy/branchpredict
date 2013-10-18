@@ -1,15 +1,14 @@
 package main
 
-
 type TwoBit struct {
 	BasePredictor
 	//size of array here doesn't matter, the bitmask for indexing does
 	predictions [4096]int
-	bitmask int
+	bitmask     int
 }
 
 func (p *TwoBit) Predict(pc int, taken bool) {
-	current := p.predictions[pc & p.bitmask]
+	current := p.predictions[pc&p.bitmask]
 
 	var t int
 	if taken {
@@ -20,13 +19,13 @@ func (p *TwoBit) Predict(pc int, taken bool) {
 
 	if current >= 2 {
 		p.correct += t
-		p.incorrect += 1-t
+		p.incorrect += 1 - t
 	} else {
 		p.incorrect += t
-		p.correct += 1-t
+		p.correct += 1 - t
 	}
 
-	p.predictions[pc & p.bitmask] = NextState(current, taken)
+	p.predictions[pc&p.bitmask] = NextState(current, taken)
 }
 
 func NextState(state int, taken bool) int {
