@@ -1,7 +1,5 @@
 package main
 
-const bitmask512 int = 0x1FF
-
 
 type TwoBit struct {
 	BasePredictor
