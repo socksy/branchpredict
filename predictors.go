@@ -22,6 +22,19 @@ func GoThroughLines(r io.Reader, p Predictor) Predictor {
 	return p
 }
 
+//who needs DRY?
+func ProfileAll(r io.Reader, p *Profiled) Predictor {
+	scanner := bufio.NewScanner(r)
+	scanner.Split(bufio.ScanWords)
+	for scanner.Scan() {
+		pc, _ := strconv.Atoi(scanner.Text())
+		scanner.Scan()
+		taken, _ := strconv.ParseBool(scanner.Text())
+		p.Profile(pc, taken)
+	}
+	return p
+}
+
 type Predictor interface {
 	Predict(pc int, taken bool)
 	Correct() int
@@ -42,5 +55,5 @@ func (b *BasePredictor) Incorrect() int {
 
 func PrintStats(name string, p Predictor) {
 	total := float64(p.Correct() + p.Incorrect())
-	fmt.Printf("%s — %d/%d correct %.2f%% of the time, incorrect %.2f%%\n", name, p.Correct(), p.Incorrect(), 100*float64(p.Correct())/total, 100*float64(p.Incorrect())/total)
+	fmt.Printf("%s — \n%d/%d correct %.2f%% of the time, incorrect %.2f%%\n", name, p.Correct(), p.Incorrect(), 100*float64(p.Correct())/total, 100*float64(p.Incorrect())/total)
 }
