@@ -3,7 +3,9 @@ package main
 //including a few comments pointing out some quirks in golang
 
 import (
+	"flag"
 	"os"
+	"fmt"
 )
 
 type Predictors struct {
@@ -18,6 +20,10 @@ func (p *Predictors) Predict(pc int, taken bool) {
 }
 
 func main() {
+	var filename string
+	flag.StringVar(&filename, "i", "tests/ls.out", "Input tracefile to use")
+	isCsv := flag.Bool("csv", false, "Print mispredictions as a comma separated list")
+	flag.Parse()
 	//(:= works out type for you and declares implicitly)
 	p := new(Predictors)
 	p.predictors = make([]Predictor, 11)
@@ -33,20 +39,29 @@ func main() {
 	p.predictors[9] = &CorrelatingTwoBit{bitmask: 0x7FF}
 	p.predictors[10] = &CorrelatingTwoBit{bitmask: 0xFFF}
 
-	filename := "ls.out"
-	f, err := os.Open("pathological.out")
+	f, err := os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close() //who needs finally?
 	ProfileAll(f, &profiled)
 	p.predictors[6] = &profiled
-	f, err = os.Open("pathological.out")
+	f, err = os.Open(filename)
 	if err != nil {
 		panic(err)
 	}
 	defer f.Close() //who needs finally?
 	GoThroughLines(f, p)
+	if !*isCsv {
+		PrettyPrint(p)
+	} else {
+		for _, pred := range p.predictors {
+			fmt.Printf("%f,", Missed(pred))
+		}
+	}
+}
+
+func PrettyPrint(p *Predictors) {
 	PrintStats("Always taken", p.predictors[0])
 	PrintStats("Never taken", p.predictors[1])
 	PrintStats("2-bit predictor, 512 table", p.predictors[2])
